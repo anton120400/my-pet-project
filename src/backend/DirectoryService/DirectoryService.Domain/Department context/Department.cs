@@ -8,5 +8,6 @@ namespace DirectoryService.Domain.Department_context
         
     internal class Department
     {
+        public Guid Id { get; init; }
     }
 }
