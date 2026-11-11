@@ -11,17 +11,17 @@ public sealed record DepartmentPath
         Depth = depth;
     }
 
-    public static DepartmentPath CreateRoot(Guid departmentId)
+    public static DepartmentPath CreateRoot(DepartmentIdentifier identifier)
     {
-        return new DepartmentPath(FormatId(departmentId), 0);
+        return new DepartmentPath(identifier.Value, 0);
     }
 
-    public DepartmentPath Append(Guid departmentId)
+    public DepartmentPath Append(DepartmentIdentifier identifier)
     {
-        string segment = FormatId(departmentId);
+        string segment = identifier.Value;
         if (Value.Split('.').Contains(segment))
         {
-            throw new ArgumentException("Идентификатор уже встречается в пути.", nameof(departmentId));
+            throw new ArgumentException("Псевдоним подразделения уже встречается в пути.", nameof(identifier));
         }
 
         if (Depth == short.MaxValue)
@@ -32,13 +32,4 @@ public sealed record DepartmentPath
         return new DepartmentPath($"{Value}.{segment}", (short)(Depth + 1));
     }
 
-    private static string FormatId(Guid departmentId)
-    {
-        if (departmentId == Guid.Empty)
-        {
-            throw new ArgumentException("Идентификатор подразделения не должен быть пустым.", nameof(departmentId));
-        }
-
-        return departmentId.ToString("N");
-    }
 }

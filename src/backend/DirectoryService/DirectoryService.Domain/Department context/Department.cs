@@ -23,7 +23,9 @@ namespace DirectoryService.Domain.Department_context
             Name = name;
             Identifier = identifier;
             ParentId = parent?.Id;
-            Path = parent is null ? DepartmentPath.CreateRoot(id) : parent.Path.Append(id);
+            Path = parent is null
+                ? DepartmentPath.CreateRoot(identifier)
+                : parent.Path.Append(identifier);
             IsActive = true;
 
             DateTime now = DateTime.UtcNow;
