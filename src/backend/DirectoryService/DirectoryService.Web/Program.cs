@@ -1,6 +1,19 @@
+using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "DirectoryService is running!");
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTimeOffset.UtcNow }));
+app.MapControllers();
 
-app.Run();
+if (!app.Environment.IsProduction())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
+
+await app.RunAsync();

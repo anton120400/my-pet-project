@@ -11,21 +11,28 @@ namespace DirectoryService.Domain.Department_context
         public Guid Id { get; }
         public DepartmentName Name { get; }
         public DepartmentIdentifier Identifier { get; }
+        public Guid? ParentId { get; }
+        public DepartmentPath Path { get; }
+        public short Depth => Path.Depth;
         public bool IsActive { get; }
         public DateTime CreatedAt { get; }
         public DateTime UpdatedAt { get; }
-        private Department(Guid id, DepartmentName name, DepartmentIdentifier identifier)
+        private Department(Guid id, DepartmentName name, DepartmentIdentifier identifier, Department? parent)
         {
             Id = id;
             Name = name;
             Identifier = identifier;
+            ParentId = parent?.Id;
+            Path = parent is null
+                ? DepartmentPath.CreateRoot(identifier)
+                : parent.Path.Append(identifier);
             IsActive = true;
 
             DateTime now = DateTime.UtcNow;
             CreatedAt = now;
             UpdatedAt = now;
         }
-        public static Department Create(Guid id,string name,string identifier)
+        public static Department Create(Guid id, string name, string identifier, Department? parent = null)
         {
             if (id == Guid.Empty)
             {
@@ -37,7 +44,7 @@ namespace DirectoryService.Domain.Department_context
             DepartmentIdentifier validIdentifier =
                 DepartmentIdentifier.Create(identifier);
 
-            return new Department(id,validName, validIdentifier);
+            return new Department(id, validName, validIdentifier, parent);
         }
     }
 }
