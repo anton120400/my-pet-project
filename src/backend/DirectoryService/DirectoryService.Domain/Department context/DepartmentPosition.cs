@@ -13,7 +13,7 @@ public sealed class DepartmentPosition
         PositionId = positionId;
     }
 
-    public static DepartmentPosition Create(Department department, Position position)
+    internal static DepartmentPosition Create(Department department, Position position)
     {
         ArgumentNullException.ThrowIfNull(department);
         ArgumentNullException.ThrowIfNull(position);

@@ -8,11 +8,11 @@ namespace DirectoryService.Domain.Position_context
     public class Position
     {
         public Guid Id { get; }
-        public PositionName Name { get; }
+        public PositionName Name { get; private set; }
         public PositionDescription Description { get; }
-        public bool IsActive { get; }
+        public bool IsActive { get; private set; }
         public DateTime CreatedAt { get; }
-        public DateTime UpdatedAt { get; }
+        public DateTime UpdatedAt { get; private set; }
         private Position(Guid id, PositionName name, PositionDescription description)
         {
             Id = id;
@@ -24,7 +24,7 @@ namespace DirectoryService.Domain.Position_context
             CreatedAt = now;
             UpdatedAt = now;
         }
-        public static Position Create(Guid id, string name,string description)
+        internal static Position Create(Guid id, string name, string description)
         {
             if (id == Guid.Empty)
             {
@@ -37,6 +37,26 @@ namespace DirectoryService.Domain.Position_context
         PositionDescription.Create(description);
 
              return new Position(id,validName,validDescription);
-        } 
+        }
+
+        internal void Rename(PositionName name)
+        {
+            EnsureActive();
+            Name = name;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Archive()
+        {
+            EnsureActive();
+            IsActive = false;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        internal void EnsureActive()
+        {
+            if (!IsActive)
+                throw new InvalidOperationException("Архивированную должность нельзя изменять.");
+        }
     }
 }
