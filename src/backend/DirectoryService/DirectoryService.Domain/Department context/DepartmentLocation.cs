@@ -13,7 +13,7 @@ public sealed class DepartmentLocation
         LocationId = locationId;
     }
 
-    public static DepartmentLocation Create(Department department, Location location)
+    internal static DepartmentLocation Create(Department department, Location location)
     {
         ArgumentNullException.ThrowIfNull(department);
         ArgumentNullException.ThrowIfNull(location);
